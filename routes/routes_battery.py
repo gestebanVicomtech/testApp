@@ -1,7 +1,7 @@
-from models.battery import BatteryModel
+from models.battery import BatteryModel, db
 from schemas.battery_schema import BatterySchema
 from flask import request, jsonify, Blueprint
-from app import db
+from config import api 
 
 
 battery_route = Blueprint('battery_blueprint',__name__)
@@ -26,7 +26,7 @@ def create_battery():
     state = request.json['state']
     health = request.json['health']
     life_cycle = request.json['life_cycle']
-    last_analysis = request.json.get('last_analysis', None)
+    last_analysis = request.json['last_analysis']
     battery = BatteryModel(tag, state, health, life_cycle, last_analysis)
     db.session.add(battery)
     db.session.commit()
@@ -39,7 +39,7 @@ def update_battery(id):
     battery.state = request.json['state']
     battery.health = request.json['health']
     battery.life_cycle = request.json['life_cycle']
-    battery.last_analysis = request.json.get('last_analysis', battery.last_analysis)
+    battery.last_analysis = request.json['last_analysis']
     db.session.commit()
     return jsonify(battery_schema.dump(battery))
 
